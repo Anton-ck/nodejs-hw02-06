@@ -1,90 +1,21 @@
 const express = require("express");
-const Joi = require("joi");
-const contacts = require("../../models/contacts");
 
-const { HttpError } = require("../../helpers/");
+const controllers = require("../../controllers/contacts");
+
+const { validateBody } = require("../../middlewares");
+
+const schemas = require("../../schemas/contacts");
 
 const router = express.Router();
 
-const addSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string().email({ minDomainSegments: 2 }).required(),
-  phone: Joi.string()
-    .regex(/^[0-9]{10}$/)
-    .messages({ "string.pattern.base": `Phone number must have only 10 digits.` })
-    .required(),
-});
+router.get("/", controllers.getAll);
 
-router.get("/", async (req, res, next) => {
-  try {
-    const result = await contacts.listContacts();
+router.get("/:contactId", controllers.getContactById);
 
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post("/", validateBody(schemas.addSchema), controllers.addContact);
 
-router.get("/:contactId", async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await contacts.getContactById(contactId);
+router.delete("/:contactId", controllers.deleteContact);
 
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/", async (req, res, next) => {
-  try {
-    const { error } = addSchema.validate(req.body);
-
-    if (error) {
-      throw HttpError(400, "Missing required name field");
-    }
-    const result = await contacts.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.delete("/:contactId", async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await contacts.removeContact(contactId);
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
-
-    res.status(200).json({
-      message: "Contact deleted",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.put("/:contactId", async (req, res, next) => {
-  try {
-    const { error } = addSchema.validate(req.body);
-
-    if (error) {
-      throw HttpError(400, "Missing fields");
-    }
-    const { contactId } = req.params;
-    const result = await contacts.updateContact(contactId, req.body);
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+router.put("/:contactId", validateBody(schemas.addSchema), controllers.updateContact);
 
 module.exports = router;
