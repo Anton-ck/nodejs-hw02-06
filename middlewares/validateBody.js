@@ -13,7 +13,7 @@ const validateBody = (schema) => {
     if (error) {
       const requireFieldError = requireField.error.details[0].path[0];
 
-      next(HttpError(400, `Missing required ${requireFieldError} field!`));
+      throw (HttpError(400, `Missing required ${requireFieldError} field!`));
     }
     next();
   };
