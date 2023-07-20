@@ -10,7 +10,6 @@ const addSchema = Joi.object({
   favorite: Joi.boolean(),
 });
 
-
 const updateFavSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
