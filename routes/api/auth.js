@@ -2,7 +2,7 @@ const express = require("express");
 
 const schemas = require("../../schemas/user");
 
-const { validateBody, isEmptyBody, authenticate, isValid } = require("../../middlewares");
+const { validateBody, isEmptyBody, authenticate} = require("../../middlewares");
 
 const controllers = require("../../controllers/auth");
 
@@ -17,9 +17,8 @@ router.get("/current", authenticate, controllers.getCurrentUser);
 router.post("/logout", authenticate, controllers.logoutUser);
 
 router.patch(
-  "/:userId/subscription",
+  "/",
   authenticate,
-  isValid,
   validateBody(schemas.updateSubscriptionSchema),
   controllers.updateSubscriptionUser
 );
