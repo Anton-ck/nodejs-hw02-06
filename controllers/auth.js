@@ -102,7 +102,9 @@ const updateAvatar = async (req, res) => {
   const resultUpload = path.join(avatarsDir, resizeFileName);
   const resizeResultUpload = path.join(tempDirResize, resizeFileName);
 
-  (await Jimp.read(tempDir)).resize(250, 250).writeAsync(`${tempDirResize}/${resizeFileName}`);
+  const reziseImg = await Jimp.read(tempDir);
+
+  reziseImg.autocrop().cover(250, 250).writeAsync(`${tempDirResize}/${resizeFileName}`);
 
   await fs.unlink(tempDir);
   await fs.rename(resizeResultUpload, resultUpload);

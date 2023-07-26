@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get("/", authenticate, controllers.getAll);
 
+router.get("/", controllers.getAll);
+
 router.get("/:contactId", authenticate, isValid, controllers.getContactById);
 
 router.post(
