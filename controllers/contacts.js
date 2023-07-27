@@ -14,6 +14,8 @@ const getAll = async (req, res) => {
   res.json(result);
 };
 
+
+
 const getContactById = async (req, res) => {
   const { contactId } = req.params;
   const result = await Contact.findById(contactId);
